@@ -9,9 +9,9 @@
 
 <body>
   <script src="/dist/vue.js"></script>
-  <div id="app" style='color:red;' name='lee'>
+  <div id="app">
     <h2>{{name}}</h2>
-    <span>123  {{arr[0]}}</span>
+    <h3>{{arr}}</h3>
   </div>
   <script>
     let vue = new Vue({
@@ -19,12 +19,17 @@
       data() {
         return {
           name: 'lee',
-          arr: [1, 2, { deep: true }]
+          arr: [123, [1, 2, 3]]
         }
       }
     })
-    console.log(vue.arr);
-
+    setTimeout(() => {
+      // vue.name = '1111'
+      vue.arr[1].push(1)
+      vue.$nextTick(() => {
+        console.log(vue.$options.el.innerHTML);
+      })
+    }, 1000);
   </script>
 </body>
 

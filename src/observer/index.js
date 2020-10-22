@@ -1,4 +1,5 @@
 import arrayMethods from './array'
+import { Dep } from './dep'
 
 class Observer {
   constructor(data) {
@@ -7,6 +8,7 @@ class Observer {
       enumerable: false,
       configurable: false,
     })
+    this.dep = new Dep()
     if (Array.isArray(data)) {
       Object.setPrototypeOf(data, arrayMethods)
       this.observeArray(data)
@@ -25,16 +27,33 @@ class Observer {
     })
   }
 }
+function dependArray(value) {
+  value.forEach((item) => {
+    item.__ob__ && item.__ob__.dep.depend()
+    if (Array.isArray(item)) dependArray(item)
+  })
+}
 export function defineReactive(data, key, value) {
-  observe(value)
+  let dep = new Dep()
+  let childOb = observe(value)
   Object.defineProperty(data, key, {
     get() {
+      if (Dep.target) {
+        dep.depend()
+        if (childOb) {
+          childOb.dep.depend()
+          if (Array.isArray(value)) {
+            dependArray(value)
+          }
+        }
+      }
       return value
     },
     set(newValue) {
       if (newValue === value) return
       observe(newValue)
       value = newValue
+      dep.notify()
     },
   })
 }

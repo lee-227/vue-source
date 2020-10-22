@@ -3,7 +3,7 @@ import { patch } from './vdom/patch'
 export function lifecycleMinxin(Vue) {
   Vue.prototype._update = function (vnode) {
     const vm = this
-    vm.$el = patch(vm.$options.el, vnode)
+    vm.$options.el = patch(vm.$options.el, vnode)
   }
 }
 export function mountComponent(vm, el) {
