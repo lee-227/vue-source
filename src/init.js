@@ -1,31 +1,33 @@
-import { initState } from './state'
-import { complieToFunction } from './compiler/index'
-import { mountComponent } from './lifecycle'
-import { nextTick } from './util'
+import { initState } from "./state";
+import { complieToFunction } from "./compiler/index";
+import { callHook, mountComponent } from "./lifecycle";
+import { mergeOptions, nextTick } from "./util";
 
 export function initMixin(Vue) {
   Vue.prototype._init = function (options) {
-    const vm = this
-    vm.$options = options
-    initState(vm)
+    const vm = this;
+    vm.$options = mergeOptions(vm.constructor.options, options);
+    callHook(vm, "beforeCreate");
+    initState(vm);
+    callHook(vm, "created");
     if (vm.$options.el) {
-      vm.$mount(vm.$options.el)
+      vm.$mount(vm.$options.el);
     }
-  }
-  Vue.prototype.$nextTick = nextTick
+  };
+  Vue.prototype.$nextTick = nextTick;
   Vue.prototype.$mount = function (el) {
-    el = document.querySelector(el)
-    const vm = this
-    vm.$options.el = el
-    const options = vm.$options
+    el = document.querySelector(el);
+    const vm = this;
+    vm.$el = el;
+    const options = vm.$options;
     if (!options.render) {
-      let template = options.template
+      let template = options.template;
       if (!template && el) {
-        template = el.outerHTML
+        template = el.outerHTML;
       }
-      const render = complieToFunction(template)
-      options.render = render
+      const render = complieToFunction(template);
+      options.render = render;
     }
-    mountComponent(vm, el)
-  }
+    mountComponent(vm, el);
+  };
 }

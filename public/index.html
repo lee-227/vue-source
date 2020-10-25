@@ -10,26 +10,23 @@
 <body>
   <script src="/dist/vue.js"></script>
   <div id="app">
-    <h2>{{name}}</h2>
-    <h3>{{arr}}</h3>
+    <my-button></my-button>
+    <my-button></my-button>
+    <my-button></my-button>
   </div>
   <script>
+    Vue.component('my-button', {
+      template: '<button>按钮</button>'
+    });
     let vue = new Vue({
       el: "#app",
-      data() {
-        return {
-          name: 'lee',
-          arr: [123, [1, 2, 3]]
+      components: {
+        'my-button': {
+          template: '<button>内部按钮</button>'
         }
       }
     })
-    setTimeout(() => {
-      // vue.name = '1111'
-      vue.arr[1].push(1)
-      vue.$nextTick(() => {
-        console.log(vue.$options.el.innerHTML);
-      })
-    }, 1000);
+    console.log(vue.$options);
   </script>
 </body>
 
