@@ -10,9 +10,7 @@
 <body>
   <script src="/dist/vue.js"></script>
   <div id="app">
-    <my-button></my-button>
-    <my-button></my-button>
-    <my-button></my-button>
+    <div>{{name}}</div>
   </div>
   <script>
     Vue.component('my-button', {
@@ -20,13 +18,15 @@
     });
     let vue = new Vue({
       el: "#app",
-      components: {
-        'my-button': {
-          template: '<button>内部按钮</button>'
+      data() {
+        return {
+          name: 'lee'
         }
       }
     })
-    console.log(vue.$options);
+    setTimeout(() => {
+      vue.name = '1111'
+    }, 3000)
   </script>
 </body>
 
